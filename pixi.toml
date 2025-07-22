@@ -1,0 +1,23 @@
+[workspace]
+channels = ["conda-forge"]
+name = "SBMD"
+platforms = ["linux-64"]
+version = "0.1.0"
+
+[tasks]
+simulation = "python MolecularDynamics.py run --smiles-file \"smiles.txt\" --parent-dir \"Aldehyde\" --run-steps \"100000\" --segments 2 --logging-interval 100 --engine \"FlashMD\" --skip-frames 16"
+xtb_compute = "python MolecularDynamics.py compute -td "
+
+[dependencies]
+xtb-python = ">=22.1,<23"
+
+[pypi-dependencies]
+pet-mad = ">=1.3.0, <2"
+flashmd = ">=0.1.2, <0.2"
+ipi = ">=3.1.5.1, <4"
+ase = ">=3.25.0, <4"
+pandas = ">=2.3.0, <3"
+numpy = "*"
+rich = ">=14.0.0, <15"
+typer = ">=0.16.0, <0.17"
+ipython = ">=9.4.0, <10"
