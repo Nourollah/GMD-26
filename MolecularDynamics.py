@@ -196,13 +196,15 @@ class MolecularDynamicsAbstract(abc.ABC):
     @fluent
     def set_molecule(self, molecule_smile: str) -> "MolecularDynamicsAbstract":
 
-        if molecule := pubchem_atoms_search(smiles=molecule_smile):
-            print(f"Fetched molecule from PubChem for SMILE: {molecule_smile}")
-        else:
-            symbols, coordinates = Chem.MolFromSmiles(molecule_smile)
-            if symbols is None or coordinates is None:
-                raise ValueError(f"Could not generate a molecule from SMILE: {molecule_smile}")
-            molecule = Atoms(symbols=symbols, positions=coordinates)
+        # molecule = pubchem_atoms_search(smiles=molecule_smile)
+        # if molecule is not None and isinstance(molecule, Atoms):
+            # typer.echo(f"Fetched molecule from PubChem for SMILE: {molecule_smile}")
+        # else:
+        typer.echo(f"Creating molecule from SMILE: {molecule_smile}")
+        symbols, coordinates = generate_3d_coordinates_from_smiles(molecule_smile)
+        if symbols is None or coordinates is None:
+            raise ValueError(f"Could not generate a molecule from SMILE: {molecule_smile}")
+        molecule = Atoms(symbols=symbols, positions=coordinates, charges=[0 for _ in range(len(symbols))])
         
         if not isinstance(molecule, Atoms):
             raise TypeError(f"The given smiles '{molecule_smile}' does not produce a valid ASE Atoms object.")
@@ -671,7 +673,7 @@ class LangevinWithFlashMD(MolecularDynamicsAbstract):
             num_threads (int): Number of processor cores for ORCA to use.
         """
         device = "cuda" if torch.cuda.is_available() else "cpu"
-        calculator_method = PETMADCalculator("1.0.1", device=device)
+        calculator_method = PETMADCalculator(device=device)
 
         self._calculator = calculator_method
         if self._molecule:
