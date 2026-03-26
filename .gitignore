@@ -176,7 +176,6 @@ cython_debug/
 
 pixi.lock
 .pixi/
-.idea
 .code
 ORCA-6.0.1/
 cp2k-2025.2/
