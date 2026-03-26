@@ -1,0 +1,10 @@
+[workspace]
+channels = ["conda-forge"]
+name = "SBMD"
+platforms = ["linux-64"]
+version = "0.1.0"
+
+[tasks]
+
+[dependencies]
+python = "==3.14"

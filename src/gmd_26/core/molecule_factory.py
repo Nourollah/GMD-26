@@ -6,13 +6,14 @@ import abc
 from ase import io as atoms_io
 import ase
 
-from molecule_tools import generate_3d_coordinates_from_smiles
+from .molecule_tools import generate_3d_coordinates_from_smiles
 
 
 class MoleculeFactory:
 	"""
 	Factory class to register builder and create molecules. It can have single or multiple molecules.
 	"""
+	_builders: typing.Dict[str, "MoleculeBuilder"] = {}
 
 	@classmethod
 	def register(cls, key: str, builder: "MoleculeBuilder") -> None:
@@ -57,13 +58,11 @@ class FromSmilesBuilder(MoleculeBuilder):
 class FromFileBuilder(MoleculeBuilder):
 	def build(
 			self,
-			file_path: str,
-			index: str = ":",
+			smiles: str,
 			**kwargs
 	) -> typing.List[ase.Atoms]:
 		return atoms_io.read(
-			file_path,
-			index=index,
+			smiles,
 			**kwargs
 		)
 

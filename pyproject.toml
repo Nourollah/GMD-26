@@ -1,0 +1,54 @@
+[project]
+name = "GMD26"
+version = "0.1.0"
+description = "GMD-26 molecular dynamics project"
+readme = "README.md"
+authors = [{name = "Amir Masoud Nourollah", email = "nourollah.am@gmail.com"}]
+requires-python = ">=3.13"
+dependencies = ["jupyter>=1.1.1,<2", "flashmd>=0.2.5,<0.3", "fastapi[standard]>=0.135.2,<0.136"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+# --- Pixi Project Configuration ---
+[tool.pixi.workspace]
+channels = ["conda-forge"]
+platforms = ["linux-64"]
+
+# --- Pixi Dependencies (Conda) ---
+[tool.pixi.dependencies]
+xtb-python = ">=22.1,<23"
+xonsh = ">=0.19.10,<0.20"
+psutil = ">=7.1.3,<8"
+rdkit = ">=2025.9.3,<2026"
+cp2k = ">=2024.2,<2025"
+
+# --- Pixi PyPI Dependencies ---
+[tool.pixi.pypi-dependencies]
+GMD26 = { path = ".", editable = true }
+ase = ">=3.25.0, <4"
+pandas = ">=2.3.0, <3"
+numpy = "*"
+rich = ">=14.0.0, <15"
+typer = ">=0.16.0, <0.17"
+ipython = ">=9.4.0, <10"
+
+# --- Tasks ---
+[tool.pixi.tasks]
+start_app = "python -m gmd_26.app.main"
+simulation = "python MolecularDynamics.py run --smiles-file \"smiles.txt\" --parent-dir \"BiAtoms\" --run-steps \"100000\" --segments 2 --logging-interval 100 --engine \"FlashMD\" --skip-frames 16"
+xtb_compute = "python MolecularDynamics.py compute -td "
+dft_compute = "python MolecularDynamics.py dft -td "
+do_md = "python src/gmd_26/app/main.py single-molecule-md -c flashmd -dyn \"langevin_flashmd\" -smi \"[Ge][Ge]([Ge])[Ge]\" -tf \"ge.traj\" -lf \"ge.txt\""
+do_md_from_file = "python src/gmd_26/app/main.py single-molecule-md -c flashmd -dyn \"langevin_flashmd\" -mgm \"from_file\" -mp \"Ge8.xyz\" -tf \"ge8.traj\" -lf \"ge8.txt\""
+
+# --- Build Config (Flat Layout) ---
+# This section tells the builder to look for python files in the root
+# rather than in a 'src' folder.
+[tool.hatch.build.targets.wheel]
+packages = ["src/gmd_26"]
+# ^ WARNING: This includes EVERYTHING in the wheel.
+# Ideally, move 'MolecularDynamics.py' into a folder named 'gmd_26' and change this to packages = ["gmd_26"]
+
+

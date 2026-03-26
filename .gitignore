@@ -173,3 +173,12 @@ cython_debug/
 # Files
 *.traj
 *.log
+
+pixi.lock
+.pixi/
+.idea
+.code
+ORCA-6.0.1/
+cp2k-2025.2/
+cp2k*
+*.inp
