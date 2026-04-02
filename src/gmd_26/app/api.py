@@ -14,17 +14,17 @@ app = FastAPI()
 def parse_xyz_string(xyz_string: str) -> ase.Atoms:
     """
     Parse an XYZ format string into an ASE Atoms object.
-    
+
     XYZ format:
         <number_of_atoms>
         <comment line>
         <symbol> <x> <y> <z>
         <symbol> <x> <y> <z>
         ...
-    
+
     Args:
         xyz_string: XYZ format as a string
-        
+
     Returns:
         ASE Atoms object
     """
@@ -60,10 +60,10 @@ class ComputeResponse(BaseModel):
 def compute_energy_and_forces(request: ComputeRequest):
     """
     Compute energy and forces using a specified calculator and compare with reference values.
-    
+
     Args:
         request: ComputeRequest with molecular structure (as XYZ string) and reference values
-        
+
     Returns:
         ComputeResponse with computed values and error metrics
     """
@@ -73,7 +73,7 @@ def compute_energy_and_forces(request: ComputeRequest):
             atoms = parse_xyz_string(request.xyz_string)
         except ValueError as e:
             raise HTTPException(status_code=400, detail=f"Invalid XYZ format: {str(e)}")
-        
+
         # 2. Create and set calculator
         try:
             calculator = CalculatorFactory.create(
@@ -82,25 +82,25 @@ def compute_energy_and_forces(request: ComputeRequest):
             )
         except ValueError as e:
             raise HTTPException(status_code=400, detail=f"Invalid calculator: {str(e)}")
-        
+
         atoms.calc = calculator
-        
+
         # 3. Get computed energy and forces
         computed_energy = atoms.get_potential_energy()
         computed_forces = atoms.get_forces()
-        
+
         # 4. Convert reference values to numpy arrays for calculation
         ref_energy = np.array(request.energy)
         ref_forces = np.array(request.forces)
         computed_forces_array = np.array(computed_forces)
-        
+
         # 5. Calculate error metrics
         energy_error = float(np.abs(computed_energy - ref_energy))
-        
+
         forces_diff = computed_forces_array - ref_forces
         forces_error = float(np.sqrt(np.mean(forces_diff**2)))  # RMSE
         max_force_error = float(np.max(np.abs(forces_diff)))
-        
+
         # 6. Prepare response
         return ComputeResponse(
             computed_energy=float(computed_energy),
@@ -109,7 +109,7 @@ def compute_energy_and_forces(request: ComputeRequest):
             forces_error=forces_error,
             max_force_error=max_force_error
         )
-        
+
     except HTTPException:
         raise
     except Exception as e:
@@ -117,7 +117,7 @@ def compute_energy_and_forces(request: ComputeRequest):
             status_code=500,
             detail=f"Error computing energy and forces: {str(e)}"
         )
-    
+
 @app.post("/scc",
           summary="Check if the API is reachable")
 def sanity_check_connection():

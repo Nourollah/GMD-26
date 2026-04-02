@@ -196,15 +196,23 @@ class PSI4Builder(CalculatorBuilder):
 class MACEBuilder(CalculatorBuilder):
     def build(
         self,
-        mace_model_path: str,
+        mace_name_or_path: str,
         charge: int = 0,
         multiplicity: int = 1,
         num_threads: int = 1,
         log_directory: str = "mace_files"
     ) -> ase.calculators.calculator.Calculator:
-        # Placeholder for MACE calculator setup
-        # Replace with actual MACE calculator initialization
-        raise NotImplementedError("MACEBuilder is not yet implemented.")
+        try:
+            if mace_name_or_path in ["small", "medium", "large"]:
+                from mace.calculators import mace_mp
+                calculator = mace_mp.MACECalculator(mace_name_or_path, device="cuda" if torch.cuda.is_available() else "cpu")
+                return calculator
+            else:
+                from mace.calculators import MACECalculator
+                calculator = MACECalculator(mace_name_or_path, device="cuda" if torch.cuda.is_available() else "cpu")
+        except:
+            raise NotImplementedError("Use \"small\", \"medium\", or \"large\" for Universal models or give the path to a custom model.")
+
 
 
 @register_calculator("nequip")

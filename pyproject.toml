@@ -5,7 +5,7 @@ description = "GMD-26 molecular dynamics project"
 readme = "README.md"
 authors = [{name = "Amir Masoud Nourollah", email = "nourollah.am@gmail.com"}]
 requires-python = ">=3.13"
-dependencies = ["jupyter>=1.1.1,<2", "flashmd>=0.2.5,<0.3", "fastapi[standard]>=0.135.2,<0.136"]
+dependencies = ["jupyter>=1.1.1,<2", "flashmd>=0.2.5,<0.3", "fastapi[standard]>=0.135.2,<0.136", "mace-torch>=0.3.15,<0.4"]
 
 [build-system]
 requires = ["hatchling"]
@@ -50,5 +50,3 @@ do_md_from_file = "python src/gmd_26/app/main.py single-molecule-md -c flashmd -
 packages = ["src/gmd_26"]
 # ^ WARNING: This includes EVERYTHING in the wheel.
 # Ideally, move 'MolecularDynamics.py' into a folder named 'gmd_26' and change this to packages = ["gmd_26"]
-
-

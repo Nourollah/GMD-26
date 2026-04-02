@@ -95,7 +95,7 @@ class LangevinFlashMDBuilder(DynamicsBuilder):
         # model = PETMADCalculator(device="cuda" if torch.cuda.is_available() else "cpu")
         energy_model, flashmd_model = get_pretrained(
             "pet-omatpes-v2", timestep)
-        
+
         dynamic = fLangevin(
             atoms=molecule,
             timestep=timestep*units.fs,
