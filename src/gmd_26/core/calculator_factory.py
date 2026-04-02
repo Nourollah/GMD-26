@@ -205,7 +205,7 @@ class MACEBuilder(CalculatorBuilder):
         try:
             if mace_name_or_path in ["small", "medium", "large"]:
                 from mace.calculators import mace_mp
-                calculator = mace_mp.MACECalculator(mace_name_or_path, device="cuda" if torch.cuda.is_available() else "cpu")
+                calculator = mace_mp(mace_name_or_path, device="cuda" if torch.cuda.is_available() else "cpu")
                 return calculator
             else:
                 from mace.calculators import MACECalculator
